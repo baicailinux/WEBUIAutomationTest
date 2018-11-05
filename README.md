@@ -66,7 +66,7 @@
 * 下载浏览器驱动
     * 谷歌浏览器：http://npm.taobao.org/mirrors/chromedriver/
     * 火狐浏览器：https://github.com/mozilla/geckodriver/
-	* 驱动支持的浏览器版本：https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Support.html
+    	* 驱动支持的浏览器版本：https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Support.html
     * IE浏览器：http://selenium-release.storage.googleapis.com/index.html
     * 将驱动所在目录加入到selenium server服务器系统环境变量:export PATH=/home/john/selenium/:$PATH
 * IE浏览器设置
