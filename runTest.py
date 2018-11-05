@@ -14,9 +14,6 @@ if __name__=='__main__':
     args=parser.parse_args()
 
     print '开始初始化......'
-    print '启动jvm......'
-    jpype.startJVM(jpype.get_default_jvm_path(),"-ea","-Djava.class.path="+JavaTool.getAllJar())
-    print '启动jvm成功'
 
     print '初始化基础数据......'
     init()
@@ -37,10 +34,6 @@ if __name__=='__main__':
     pytest_execute_params.append(dir)
 
     exit_code=pytest.main(pytest_execute_params)
-
-    # 当Python线程中执行jpype相关代码时会出现无法关闭jvm卡死的情况，故不进行主动关闭jvm，Python主进程结束自动关闭
-    # print '关闭jvm......'
-    # jpype.shutdownJVM()
 
     print '结束测试......'
     sys.exit(exit_code)
