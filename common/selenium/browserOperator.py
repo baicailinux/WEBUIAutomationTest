@@ -20,31 +20,31 @@ class BrowserOperator:
         return self._driver.title.encode('utf-8')
 
     def getText(self,elementInfo):
-        webElement=self.getElement(elementInfo)
+        webElement=self._getElement(elementInfo)
         return webElement.text.encode('utf-8')
 
     def click(self,elementInfo):
-        webElement=self.getElement(elementInfo)
+        webElement=self._getElement(elementInfo)
         webElement.click()
 
     def sendText(self,elementInfo,text):
         text=text.decode('utf-8')
-        webElement=self.getElement(elementInfo)
+        webElement=self._getElement(elementInfo)
         webElement.clear()
         webElement.send_keys(text)
 
     def is_displayed(self,elementInfo):
-        webElement=self.getElement(elementInfo)
+        webElement=self._getElement(elementInfo)
         flag=webElement.is_displayed()
         return flag
 
     def is_enabled(self,elementInfo):
-        webElement = self.getElement(elementInfo)
+        webElement = self._getElement(elementInfo)
         flag = webElement.is_enabled()
         return flag
 
     def is_selected(self,elementInfo):
-        webElement = self.getElement(elementInfo)
+        webElement = self._getElement(elementInfo)
         flag = webElement.is_selected()
         return flag
 
@@ -55,7 +55,7 @@ class BrowserOperator:
         :param value:
         :return:
         """
-        webElement= Select(self.getElement(elementInfo))
+        webElement= Select(self._getElement(elementInfo))
         webElement.select_by_value(value)
 
     def select_dropDownBox_by_text(self,elementInfo,text):
@@ -65,7 +65,7 @@ class BrowserOperator:
         :param text:
         :return:
         """
-        webElement= Select(self.getElement(elementInfo))
+        webElement= Select(self._getElement(elementInfo))
         webElement.select_by_visible_text(text)
 
     def select_dropDownBox_by_index(self,elementInfo,index):
@@ -75,7 +75,7 @@ class BrowserOperator:
         :param index:
         :return:
         """
-        webElement= Select(self.getElement(elementInfo))
+        webElement= Select(self._getElement(elementInfo))
         webElement.select_by_index(index)
 
     def select_dropDownBox_by_values(self,elementInfo,values):
@@ -85,7 +85,7 @@ class BrowserOperator:
         :param values:以数组传参
         :return:
         """
-        webElement= Select(self.getElement(elementInfo))
+        webElement= Select(self._getElement(elementInfo))
         webElement.deselect_all()
         for value in values:
             webElement.select_by_value(value)
@@ -97,7 +97,7 @@ class BrowserOperator:
         :param texts:以数组传参
         :return:
         """
-        webElement= Select(self.getElement(elementInfo))
+        webElement= Select(self._getElement(elementInfo))
         webElement.deselect_all()
         for text in texts:
             webElement.select_by_visible_text(text)
@@ -109,7 +109,7 @@ class BrowserOperator:
         :param indexs: 以数组传参
         :return:
         """
-        webElement= Select(self.getElement(elementInfo))
+        webElement= Select(self._getElement(elementInfo))
         webElement.deselect_all()
         for index in indexs:
             webElement.select_by_index(index)
@@ -142,7 +142,7 @@ class BrowserOperator:
         fileName=DateTimeTool.getNowTime('%Y%m%d%H%M%S%f_')+fileName
         allure.MASTER_HELPER.attach(fileName,self._driver.get_screenshot_as_png(),allure.MASTER_HELPER.attach_type.PNG)
 
-    def getElement(self,elementInfo):
+    def _getElement(self,elementInfo):
         """
         定位元素，包括需要等待定位和无需等待定位
         :param elementInfo:
@@ -199,6 +199,14 @@ class BrowserOperator:
         elif locator_type==By.CSS_SELECTOR:
             webElement=self._driver.find_element_by_css_selector(locator_value)
         return webElement
+
+    def explicit_wait_page_title(self,elementInfo):
+        """
+        显式等待页面title
+        :param elementInfo:
+        :return:
+        """
+        self._getElement(elementInfo)
 
     def getDriver(self):
         return self._driver
