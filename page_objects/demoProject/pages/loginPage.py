@@ -5,7 +5,7 @@ class LoginPage:
     def __init__(self,browserOperator):
         self._browserOperator=browserOperator
         self._loginPageElements=LoginPageElements()
-        self._browserOperator.implicity_wait(self._loginPageElements.title)
+        self._browserOperator.getElement(self._loginPageElements.title)
 
     def loginSuccess(self,username,password):
         self._browserOperator.sendText(self._loginPageElements.usernameInput,username)
