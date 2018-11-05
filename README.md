@@ -81,6 +81,7 @@
     * 注:https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration
 
 ## 二、修改配置
+* vim config/config.conf 配置测试信息
 * vim config/init.conf 配置需要初始化的项目
 * vim config/projectName/projectName.conf 配置测试项目的信息
 
