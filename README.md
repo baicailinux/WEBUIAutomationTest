@@ -103,7 +103,7 @@
 * 元素的显式等待时间默认为30s
 * 封装的显式等待类型支持:page_objects/wait_type.py
 * 封装的定位类型支持:page_objects/locator_type.py
-* 默认使用8个worker进行并行测试
+* 默认使用4个worker进行并行测试
 * 项目
     * demoProject
         * 例子项目
