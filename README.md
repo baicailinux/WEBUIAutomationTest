@@ -3,14 +3,13 @@
 # [WEB UI自动化测试]()
 # [概况]()
 * 本项目采用UI MAP和Page Object设计模式
-* 本项目由pytest、pytest-xdist、assertpy、selenium、PyMySQL、allure、redis、JPype1的python模块组成
+* 本项目由pytest、pytest-xdist、assertpy、selenium、PyMySQL、allure、redis的python模块组成
     * pytest是python的一个单元测试框架,https://docs.pytest.org/en/latest/
     * pytest-xdist是pytest的一个插件,可多进程同时执行测试用例,https://github.com/pytest-dev/pytest-xdist
     * assertpy是一个包含丰富的断言库,支持pytest,https://github.com/ActivisionGameScience/assertpy
     * selenium是ui自动化测试框架,https://www.seleniumhq.org/
     * PyMySQL用于操作MySQL数据库,https://github.com/PyMySQL/PyMySQL
     * allure用于生成测试报告,http://allure.qatools.ru/
-    * JPype1用于执行java代码,https://github.com/jpype-project/jpype
 
 # [使用]()
 ## 一、环境准备
