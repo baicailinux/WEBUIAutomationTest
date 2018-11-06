@@ -2,6 +2,8 @@
 from base.readConfig import ReadConfig
 from common.java.javaTool import JavaTool
 from init.init import init
+from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.command import Command
 import argparse
 import pytest
 import sys
@@ -34,6 +36,15 @@ if __name__=='__main__':
     pytest_execute_params.append(dir)
 
     exit_code=pytest.main(pytest_execute_params)
+    
+    print '清除未被关闭的浏览器......'
+    conn=RemoteConnection(ReadConfig().config.selenium_hub,True)
+    sessions=conn.execute(Command.GET_ALL_SESSIONS,None)
+    sessions=sessions['value']
+    for session in sessions:
+        session_id=session['id']
+        conn.execute(Command.QUIT,{'sessionId':session_id})
+    print '清除未被关闭的浏览器完成......'
 
     print '结束测试......'
     sys.exit(exit_code)
