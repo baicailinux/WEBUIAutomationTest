@@ -1,6 +1,5 @@
 #-*- coding:utf8 -*-
 from base.readConfig import ReadConfig
-from common.java.javaTool import JavaTool
 from init.init import init
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 from selenium.webdriver.remote.command import Command
