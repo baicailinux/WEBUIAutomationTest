@@ -6,7 +6,7 @@ class IndexPage:
         self._browserOperator=browserOperator
         self._indexPageElements=IndexPageElements()
         self._browserOperator.explicit_wait_page_title(self._indexPageElements.title)
-        self._browserOperator.get_screenshot('indexPage')
+        self._browserOperator.get_screenshot('indexpage')
 
     def click_menu_network(self):
         self._browserOperator.click(self._indexPageElements.menu_network)
