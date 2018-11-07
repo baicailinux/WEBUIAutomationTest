@@ -3,6 +3,7 @@ from common.dateTimeTool import DateTimeTool
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 from page_objects.wait_type import Wait_Type  as Wait_By
 import allure
@@ -182,22 +183,23 @@ class BrowserOperator:
                     webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.visibility_of(self._driver.find_element_by_partial_link_text(locator_value)))
                 elif locator_type == By.CSS_SELECTOR:
                     webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.visibility_of(self._driver.find_element_by_css_selector(locator_value)))
-            return webElement
-
-        # 无需等待元素定位
-        if locator_type==By.ID:
-            webElement=self._driver.find_element_by_id(locator_value)
-        elif locator_type==By.NAME:
-            webElement=self._driver.find_element_by_name(locator_value)
-        elif locator_type==By.LINK_TEXT:
-            webElement=self._driver.find_element_by_link_text(locator_value)
-        elif locator_type==By.XPATH:
-            webElement=self._driver.find_element_by_xpath(locator_value)
-        elif locator_type==By.PARTIAL_LINK_TEXT:
-            # 部分链接文本
-            webElement=self._driver.find_element_by_partial_link_text(locator_value)
-        elif locator_type==By.CSS_SELECTOR:
-            webElement=self._driver.find_element_by_css_selector(locator_value)
+        else:
+            # 无需等待元素定位
+            if locator_type==By.ID:
+                webElement=self._driver.find_element_by_id(locator_value)
+            elif locator_type==By.NAME:
+                webElement=self._driver.find_element_by_name(locator_value)
+            elif locator_type==By.LINK_TEXT:
+                webElement=self._driver.find_element_by_link_text(locator_value)
+            elif locator_type==By.XPATH:
+                webElement=self._driver.find_element_by_xpath(locator_value)
+            elif locator_type==By.PARTIAL_LINK_TEXT:
+                # 部分链接文本
+                webElement=self._driver.find_element_by_partial_link_text(locator_value)
+            elif locator_type==By.CSS_SELECTOR:
+                webElement=self._driver.find_element_by_css_selector(locator_value)
+        if isinstance(webElement,WebElement):
+            self.highLight(webElement)
         return webElement
 
     def explicit_wait_page_title(self,elementInfo):
@@ -207,6 +209,14 @@ class BrowserOperator:
         :return:
         """
         self._getElement(elementInfo)
+
+    def highLight(self,webElement,seconds=5):
+        self._driver.execute_script("element = arguments[0];" +
+                              "original_style = element.getAttribute('style');" +
+                              "element.setAttribute('style', original_style + \";" +
+                              " border: 3px dashed rgb(250,0,255);\");" +
+                              "setTimeout(function(){element.setAttribute('style', original_style);}, "+str(seconds*1000)+");",
+                                    webElement)
 
     def getDriver(self):
         return self._driver
