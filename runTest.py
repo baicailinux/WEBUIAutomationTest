@@ -37,12 +37,15 @@ if __name__=='__main__':
     exit_code=pytest.main(pytest_execute_params)
     
     print '清除未被关闭的浏览器......'
-    conn=RemoteConnection(ReadConfig().config.selenium_hub,True)
-    sessions=conn.execute(Command.GET_ALL_SESSIONS,None)
-    sessions=sessions['value']
-    for session in sessions:
-        session_id=session['id']
-        conn.execute(Command.QUIT,{'sessionId':session_id})
+    try:
+        conn=RemoteConnection(ReadConfig().config.selenium_hub,True)
+        sessions=conn.execute(Command.GET_ALL_SESSIONS,None)
+        sessions=sessions['value']
+        for session in sessions:
+            session_id=session['id']
+            conn.execute(Command.QUIT,{'sessionId':session_id})
+    except Exception,e:
+        print '清除未关闭浏览器异常:\r\n'+e.message
     print '清除未被关闭的浏览器完成......'
 
     print '结束测试......'

@@ -9,6 +9,16 @@ class TestLogin:
         self.demoProjectClient=DemoProjectClient()
         self.loginPage=LoginPage(self.demoProjectClient.browserOperator)
 
+    @pytest.fixture
+    def fixture_test_login_success(self):
+        yield self.fixture_test_login_success
+        self.indexPage.click_user()
+        self.indexPage.click_user_logout()
+
+    def test_login_success(self,fixture_test_login_success):
+        self.indexPage=self.loginPage.loginSuccess('zpyadmin','123456..')
+        assert_that(self.demoProjectClient.browserOperator.getTitle()).is_equal_to(self.indexPage.getElements().title.wait_expected_value)
+
     def test_empty_username_and_empty_password(self):
         self.loginPage.loginFail('', '')
         assert_that(self.demoProjectClient.browserOperator.getText(
@@ -29,10 +39,6 @@ class TestLogin:
         assert_that(self.demoProjectClient.browserOperator.getText(
             self.loginPage.getElements().loginEmptyPassword_tip)).is_equal_to(
             self.loginPage.getElements().loginEmptyPassword_tip.expected_value)
-
-    def test_login_success(self):
-        indexPage=self.loginPage.loginSuccess('zpyadmin','123456..')
-        assert_that(self.demoProjectClient.browserOperator.getTitle()).is_equal_to(indexPage.getElements().title.wait_expected_value)
 
     def teardown_class(self):
         self.demoProjectClient.browserOperator.close()
