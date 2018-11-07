@@ -16,7 +16,7 @@ class TestLogin:
         self.indexPage.click_user_logout()
 
     def test_login_success(self,fixture_test_login_success):
-        self.indexPage=self.loginPage.loginSuccess('zpyadmin','123456..')
+        self.indexPage=self.loginPage.loginSuccess(self.demoProjectClient.demoProjectConfig.normal_username,self.demoProjectClient.demoProjectConfig.normal_password)
         assert_that(self.demoProjectClient.browserOperator.getTitle()).is_equal_to(self.indexPage.getElements().title.wait_expected_value)
 
     def test_empty_username_and_empty_password(self):
