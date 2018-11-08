@@ -143,6 +143,9 @@ class BrowserOperator:
         fileName=DateTimeTool.getNowTime('%Y%m%d%H%M%S%f_')+fileName
         allure.MASTER_HELPER.attach(fileName,self._driver.get_screenshot_as_png(),allure.MASTER_HELPER.attach_type.PNG)
 
+    def refresh(self):
+        self._driver.refresh()
+
     def _getElement(self,elementInfo):
         """
         定位元素，包括需要等待定位和无需等待定位
