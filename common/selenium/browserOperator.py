@@ -7,6 +7,8 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 from page_objects.wait_type import Wait_Type  as Wait_By
 import allure
+import os
+
 class BrowserOperator:
     def __init__(self,driver):
         self._driver=driver
@@ -145,6 +147,24 @@ class BrowserOperator:
 
     def refresh(self):
         self._driver.refresh()
+
+    def uploadFile(self,elementInfo,filePath):
+        """
+        适用于元素为input且type="file"的文件上传
+        :param elementInfo:
+        :param filePath:
+        :return:
+        """
+        webElement = self._getElement(elementInfo)
+        webElement.send_keys(os.path.abspath(filePath))
+
+    def get_property(self,elementInfo,property_name):
+        webElement = self._getElement(elementInfo)
+        return webElement.get_property(property_name)
+
+    def get_attribute(self,elementInfo,attribute_name):
+        webElement = self._getElement(elementInfo)
+        return webElement.get_attribute(attribute_name)
 
     def _getElement(self,elementInfo):
         """
