@@ -166,6 +166,39 @@ class BrowserOperator:
         webElement = self._getElement(elementInfo)
         return webElement.get_attribute(attribute_name)
 
+    def get_element_outer_html(self,elementInfo):
+        return self.get_attribute(elementInfo,'outerHTML')
+
+    def get_element_inner_html(self, elementInfo):
+        return self.get_attribute(elementInfo,'innerHTML')
+
+    def get_table_data(self,elementInfo,data_type='text'):
+        """
+        以二维数组返回表格每一行的每一列的数据[[row1][row2][colume1,clume2]]
+        :param elementInfo:
+        :param data_type: text-返回表格文本内容,html-返回表格html内容
+        :return:
+        """
+        # 由于表格定位经常会出现【StaleElementReferenceException: Message: stale element reference: element is not attached to the page document 】异常错误,
+        # 解决此异常只需要用显示等待，保证元素存在即可，显示等待类型中VISIBILITY_OF有实现StaleElementReferenceException异常捕获,
+        # 所以强制设置表格定位元素时使用VISIBILITY_OF
+        elementInfo.wait_type=Wait_By.VISIBILITY_OF
+        table_trs = self._getElement(elementInfo).find_elements_by_tag_name('tr')
+        table_data=[]
+        for tr in table_trs:
+            tr_data=[]
+            # 此处同样用于解决StaleElementReferenceException异常问题
+            WebDriverWait(self._driver,30).until(expected_conditions.visibility_of(tr))
+            tr_tds = tr.find_elements_by_tag_name('td')
+            if data_type.lower()=='text':
+                for td in tr_tds:
+                    tr_data.append(td.text)
+            elif data_type.lower()=='html':
+                for td in tr_tds:
+                    tr_data.append(td.get_attribute('innerHTML'))
+            table_data.append(tr_data)
+        return table_data
+
     def _getElement(self,elementInfo):
         """
         定位元素，包括需要等待定位和无需等待定位
