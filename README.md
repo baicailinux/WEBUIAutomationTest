@@ -66,7 +66,7 @@
     * 谷歌浏览器：http://npm.taobao.org/mirrors/chromedriver/
     * 火狐浏览器：https://github.com/mozilla/geckodriver/
     	* 驱动支持的浏览器版本：https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Support.html
-    * IE浏览器：http://selenium-release.storage.googleapis.com/index.html
+    * IE浏览器(建议使用32位,64位操作极慢)：http://selenium-release.storage.googleapis.com/index.html
     * 将驱动所在目录加入到selenium server服务器系统环境变量:export PATH=/home/john/selenium/:$PATH
 * IE浏览器设置
     * 在Windows Vista、Windows7系统上的IE浏览器在IE7及以上版本中，需要设置四个区域的保护模式为一样，设置开启或者关闭都可以。
@@ -77,7 +77,9 @@
     * 针对IE11需要设置注册表以便于浏览器驱动与浏览器建立连接
         * Windows 64位：HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BFCACHE
         * Windows 32位：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BFCACHE
-        * 如果FEATRUE_BFCACHE项不存在，需要创建一个，然后在里面创建一个DWORD，命名为iexplore.exe，值为0
+        * 如果FEATRUE_BFCACHE项不存在，需要创建一个，然后在里面创建一个DWORD(32位)，命名为iexplore.exe，值为0
+        * 重启系统
+    * 建议设置ie退出时自动删除历史记录,因为selenium操作删除ie浏览器cookies没办法删完整
     * 注:https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver#required-configuration
 
 ## 二、修改配置
