@@ -425,7 +425,6 @@ class BrowserOperator:
             # 此处同样用于解决StaleElementReferenceException异常问题
             WebDriverWait(self._driver,30).until(expected_conditions.visibility_of(subWebElement))
             self.highLight(subWebElement)
-        print subWebElement
         return subWebElement
 
     def getSubElements(self, parent_element, sub_elementInfo):
