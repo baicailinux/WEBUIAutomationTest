@@ -287,7 +287,7 @@ class BrowserOperator:
 
     def getElement(self,elementInfo):
         """
-        定位元素，包括需要等待定位和无需等待定位
+        定位单个元素
         :param elementInfo:
         :return:
         """
@@ -299,44 +299,40 @@ class BrowserOperator:
         wait_expected_value = elementInfo.wait_expected_value
         if wait_expected_value:
             wait_expected_value = wait_expected_value.decode('utf-8')
-        # 需等待元素定位
-        if wait_type:
-            if wait_type == Wait_By.TITLE_IS:
-                webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.title_is(wait_expected_value))
-            elif wait_type == Wait_By.TITLE_CONTAINS:
-                webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.title_contains(wait_expected_value))
-            elif wait_type == Wait_By.PRESENCE_OF_ELEMENT_LOCATED:
-                webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.presence_of_element_located((locator_type, locator_value)))
-            elif wait_type == Wait_By.ELEMENT_TO_BE_CLICKABLE:
-                webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.element_to_be_clickable((locator_type, locator_value)))
-            elif wait_type == Wait_By.ELEMENT_LOCATED_TO_BE_SELECTED:
-                webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.element_located_to_be_selected((locator_type, locator_value)))
-            elif wait_type == Wait_By.VISIBILITY_OF:
-                webElements = WebDriverWait(self._driver,wait_seconds).until((expected_conditions.visibility_of_all_elements_located((locator_type,locator_value))))
-                if len(webElements)>0:
-                    webElement=webElements[0]
+
+        # 查找元素,为了保证元素被定位,都进行显式等待
+        if wait_type == Wait_By.TITLE_IS:
+            webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.title_is(wait_expected_value))
+        elif wait_type == Wait_By.TITLE_CONTAINS:
+            webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.title_contains(wait_expected_value))
+        elif wait_type == Wait_By.PRESENCE_OF_ELEMENT_LOCATED:
+            webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.presence_of_element_located((locator_type, locator_value)))
+        elif wait_type == Wait_By.ELEMENT_TO_BE_CLICKABLE:
+            webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.element_to_be_clickable((locator_type, locator_value)))
+        elif wait_type == Wait_By.ELEMENT_LOCATED_TO_BE_SELECTED:
+            webElement = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.element_located_to_be_selected((locator_type, locator_value)))
+        elif wait_type == Wait_By.VISIBILITY_OF:
+            webElements = WebDriverWait(self._driver,wait_seconds).until((expected_conditions.visibility_of_all_elements_located((locator_type,locator_value))))
+            if len(webElements)>0:
+                webElement=webElements[0]
         else:
-            # 无需等待元素定位
             if locator_type==By.ID:
-                webElement=self._driver.find_element_by_id(locator_value)
+                webElement=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_element_by_id(locator_value))
             elif locator_type==By.NAME:
-                webElement=self._driver.find_element_by_name(locator_value)
+                webElement=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_element_by_name(locator_value))
             elif locator_type==By.LINK_TEXT:
-                webElement=self._driver.find_element_by_link_text(locator_value)
+                webElement=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_element_by_link_text(locator_value))
             elif locator_type==By.XPATH:
-                webElement=self._driver.find_element_by_xpath(locator_value)
+                webElement=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_element_by_xpath(locator_value))
             elif locator_type==By.PARTIAL_LINK_TEXT:
-                # 部分链接文本
-                webElement=self._driver.find_element_by_partial_link_text(locator_value)
+                webElement=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_element_by_partial_link_text(locator_value))
             elif locator_type==By.CSS_SELECTOR:
-                webElement=self._driver.find_element_by_css_selector(locator_value)
+                webElement=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_element_by_css_selector(locator_value))
             elif locator_type==By.CLASS_NAME:
-                webElement = self._driver.find_element_by_class_name(locator_value)
+                webElement = WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_element_by_class_name(locator_value))
             elif locator_type==By.TAG_NAME:
-                webElement = self._driver.find_element_by_tag_name(locator_value)
-        if isinstance(webElement,WebElement):
-            # 此处同样用于解决StaleElementReferenceException异常问题
-            WebDriverWait(self._driver,30).until(expected_conditions.visibility_of(webElement))
+                webElement = WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_element_by_tag_name(locator_value))
+        if not wait_type==Wait_By.TITLE_IS and not wait_type==Wait_By.TITLE_CONTAINS:
             self.highLight(webElement)
         return webElement
 
@@ -351,41 +347,36 @@ class BrowserOperator:
         locator_value=elementInfo.locator_value
         wait_type = elementInfo.wait_type
         wait_seconds = elementInfo.wait_seconds
-        # 需等待元素定位
-        if wait_type:
-            if wait_type == Wait_By.PRESENCE_OF_ELEMENT_LOCATED:
-                webElements = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.presence_of_all_elements_located((locator_type, locator_value)))
-            elif wait_type == Wait_By.VISIBILITY_OF:
-                webElements = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.visibility_of_all_elements_located((locator_type,locator_value)))
+
+        # 查找元素,为了保证元素被定位,都进行显式等待
+        if wait_type == Wait_By.PRESENCE_OF_ELEMENT_LOCATED:
+            webElements = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.presence_of_all_elements_located((locator_type, locator_value)))
+        elif wait_type == Wait_By.VISIBILITY_OF:
+            webElements = WebDriverWait(self._driver, wait_seconds).until(expected_conditions.visibility_of_all_elements_located((locator_type,locator_value)))
         else:
-            # 无需等待元素定位
             if locator_type==By.ID:
-                webElements=self._driver.find_elements_by_id(locator_value)
+                webElements=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_elements_by_id(locator_value))
             elif locator_type==By.NAME:
-                webElements=self._driver.find_elements_by_name(locator_value)
+                webElements=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_elements_by_name(locator_value))
             elif locator_type==By.LINK_TEXT:
-                webElements=self._driver.find_elements_by_link_text(locator_value)
+                webElements=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_elements_by_link_text(locator_value))
             elif locator_type==By.XPATH:
-                webElements=self._driver.find_elements_by_xpath(locator_value)
+                webElements=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_elements_by_xpath(locator_value))
             elif locator_type==By.PARTIAL_LINK_TEXT:
-                # 部分链接文本
-                webElements=self._driver.find_elements_by_partial_link_text(locator_value)
+                webElements=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_elements_by_partial_link_text(locator_value))
             elif locator_type==By.CSS_SELECTOR:
-                webElements=self._driver.find_elements_by_css_selector(locator_value)
+                webElements=WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_elements_by_css_selector(locator_value))
             elif locator_type==By.CLASS_NAME:
-                webElements = self._driver.find_elements_by_class_name(locator_value)
+                webElements = WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_elements_by_class_name(locator_value))
             elif locator_type==By.TAG_NAME:
-                webElements =  self._driver.find_elements_by_tag_name(locator_value)
+                webElements = WebDriverWait(self._driver,wait_seconds).until(lambda driver:driver.find_elements_by_tag_name(locator_value))
         for webElement in webElements:
-            if isinstance(webElement, WebElement):
-                # 此处同样用于解决StaleElementReferenceException异常问题
-                WebDriverWait(self._driver, 30).until(expected_conditions.visibility_of(webElement))
-                self.highLight(webElement)
+            self.highLight(webElement)
         return webElements
 
     def getSubElement(self,parent_element,sub_elementInfo):
         """
-        获得元素的子元素
+        获得元素的单个子元素
         :param parent_element: 父元素
         :param sub_elementInfo: 子元素,只能提供pojo.elementInfo.ElementInfo类型
         :return:
@@ -398,33 +389,32 @@ class BrowserOperator:
             return None
         if not isinstance(sub_elementInfo,ElementInfo):
             return None
-        # 此处同样用于解决StaleElementReferenceException异常问题
-        WebDriverWait(self._driver, 30).until(expected_conditions.visibility_of(webElement))
+
         # 通过父元素查找子元素
         locator_type=sub_elementInfo.locator_type
         locator_value=sub_elementInfo.locator_value
+        wait_seconds = sub_elementInfo.wait_seconds
+
+        # 查找元素,为了保证元素被定位,都进行显式等待
         if locator_type == By.ID:
-            subWebElement =webElement.find_element_by_id(locator_value)
+            subWebElement =WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_element_by_id(locator_value))
         elif locator_type == By.NAME:
-            subWebElement = webElement.find_element_by_name(locator_value)
+            subWebElement = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_element_by_name(locator_value))
         elif locator_type == By.LINK_TEXT:
-            subWebElement = webElement.find_element_by_link_text(locator_value)
+            subWebElement = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_element_by_link_text(locator_value))
         elif locator_type == By.XPATH:
-            subWebElement = webElement.find_element_by_xpath(locator_value)
+            subWebElement = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_element_by_xpath(locator_value))
         elif locator_type == By.PARTIAL_LINK_TEXT:
-            subWebElement = webElement.find_element_by_partial_link_text(locator_value)
+            subWebElement = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_element_by_partial_link_text(locator_value))
         elif locator_type == By.CSS_SELECTOR:
-            subWebElement = webElement.find_element_by_css_selector(locator_value)
+            subWebElement = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_element_by_css_selector(locator_value))
         elif locator_type == By.CLASS_NAME:
-            subWebElement = webElement.find_element_by_class_name(locator_value)
+            subWebElement = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_element_by_class_name(locator_value))
         elif locator_type == By.TAG_NAME:
-            subWebElement = webElement.find_element_by_tag_name(locator_value)
+            subWebElement = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_element_by_tag_name(locator_value))
         else:
             return None
-        if isinstance(subWebElement,WebElement):
-            # 此处同样用于解决StaleElementReferenceException异常问题
-            WebDriverWait(self._driver,30).until(expected_conditions.visibility_of(subWebElement))
-            self.highLight(subWebElement)
+        self.highLight(subWebElement)
         return subWebElement
 
     def getSubElements(self, parent_element, sub_elementInfo):
@@ -442,34 +432,34 @@ class BrowserOperator:
             return None
         if not isinstance(sub_elementInfo,ElementInfo):
             return None
-        # 此处同样用于解决StaleElementReferenceException异常问题
-        WebDriverWait(self._driver, 30).until(expected_conditions.visibility_of(webElement))
+
         # 通过父元素查找多个子元素
         locator_type = sub_elementInfo.locator_type
         locator_value = sub_elementInfo.locator_value
+        wait_seconds = sub_elementInfo.wait_seconds
+
+        # 查找元素,为了保证元素被定位,都进行显式等待
         if locator_type == By.ID:
-            subWebElements = webElement.find_elements_by_id(locator_value)
+            subWebElements =WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_elements_by_id(locator_value))
         elif locator_type == By.NAME:
-            subWebElements = webElement.find_elements_by_name(locator_value)
+            subWebElements = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_elements_by_name(locator_value))
         elif locator_type == By.LINK_TEXT:
-            subWebElements = webElement.find_elements_by_link_text(locator_value)
+            subWebElements = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_elements_by_link_text(locator_value))
         elif locator_type == By.XPATH:
-            subWebElements = webElement.find_elements_by_xpath(locator_value)
+            subWebElements = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_elements_by_xpath(locator_value))
         elif locator_type == By.PARTIAL_LINK_TEXT:
-            subWebElements = webElement.find_elements_by_partial_link_text(locator_value)
+            subWebElements = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_elements_by_partial_link_text(locator_value))
         elif locator_type == By.CSS_SELECTOR:
-            subWebElements = webElement.find_elements_by_css_selector(locator_value)
+            subWebElements = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_elements_by_css_selector(locator_value))
         elif locator_type == By.CLASS_NAME:
-            subWebElements = webElement.find_elements_by_class_name(locator_value)
+            subWebElements = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_elements_by_class_name(locator_value))
         elif locator_type == By.TAG_NAME:
-            subWebElements = webElement.find_elements_by_tag_name(locator_value)
+            subWebElements = WebDriverWait(webElement,wait_seconds).until(lambda webElement:webElement.find_elements_by_tag_name(locator_value))
         else:
             return None
+        print subWebElements
         for subWebElement in subWebElements:
-            if isinstance(subWebElement, WebElement):
-                # 此处同样用于解决StaleElementReferenceException异常问题
-                WebDriverWait(self._driver, 30).until(expected_conditions.visibility_of(subWebElement))
-                self.highLight(subWebElement)
+            self.highLight(subWebElement)
         return subWebElements
 
     def explicit_wait_page_title(self,elementInfo):
@@ -481,6 +471,8 @@ class BrowserOperator:
         self.getElement(elementInfo)
 
     def highLight(self,webElement,seconds=5):
+        # 此处同样用于解决StaleElementReferenceException异常问题
+        WebDriverWait(self._driver, 30).until(expected_conditions.visibility_of(webElement))
         self._driver.execute_script("element = arguments[0];" +
                               "original_style = element.getAttribute('style');" +
                               "element.setAttribute('style', original_style + \";" +
