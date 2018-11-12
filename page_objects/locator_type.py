@@ -6,3 +6,5 @@ class Locator_Type:
     PARTAIL_LINK = 'partail_link'
     CSS = 'css'
     XPATH = 'xpath'
+    CLASS_NAME = 'class name'
+    TAG_NAME = "tag name"

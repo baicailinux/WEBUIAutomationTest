@@ -13,10 +13,11 @@
 
 # [使用]()
 ## 一、环境准备
-### 1、安装python依赖模块
+### 1、脚本运行环境准备
+#### 1.1、安装python依赖模块
 * pip install -r requirements.txt
 
-### 2、安装allure
+#### 1.2、安装allure
 * 源安装
     * sudo apt-add-repository ppa:qameta/allure
     * sudo apt-get update 
@@ -27,12 +28,12 @@
     * 解压allure-2.4.1.zip
     * 加入系统环境变量:export PATH=/home/john/allure-2.4.1/bin:$PATH
 
-### 3、安装openjdk8
+#### 1.3、安装openjdk8
 * sudo add-apt-repository ppa:openjdk-r/ppa
 * sudo apt-get update
 * sudo apt-get install openjdk-8-jdk
 
-### 4、安装Oracle Instant Client
+#### 1.4、安装Oracle Instant Client
 * linux
     * 安装libaio包
         * centos:yum install libaio
@@ -57,7 +58,14 @@
         * 配置中文编码,环境变量创建NLS_LANG=SIMPLIFIED CHINESE_CHINA.UTF8  
     * 注意:如果使用64位,python和instantclient都需要使用64位
     
-### 5、安装配置selenium
+### 2、selenium server运行环境准备
+### 2.1、安装jdk1.8,并配置环境变量
+* export JAVA_HOME=/usr/lib/jvm/jdk8
+* export JRE_HOME=${JAVA_HOME}/jre 
+* export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+* export PATH=${JAVA_HOME}/bin:$PATH
+
+#### 2.2、安装配置selenium
 * 配置selenium server
     * 下载selenium-server-standalone-3.14.0.jar
     * 下载地址:http://selenium-release.storage.googleapis.com/index.html
@@ -65,7 +73,7 @@
 * 下载浏览器驱动
     * 谷歌浏览器：http://npm.taobao.org/mirrors/chromedriver/
     * 火狐浏览器：https://github.com/mozilla/geckodriver/
-    	* 驱动支持的浏览器版本：https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Support.html
+        * 驱动支持的浏览器版本：https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Support.html
     * IE浏览器(建议使用32位,64位操作极慢)：http://selenium-release.storage.googleapis.com/index.html
     * 将驱动所在目录加入到selenium server服务器系统环境变量:export PATH=/home/john/selenium/:$PATH
 * IE浏览器设置
